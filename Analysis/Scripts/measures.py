@@ -148,8 +148,10 @@ def calculateAverageBurstingness(word):
     spacing = findSpacingBetweenWords(word)
     if np.isnan(spacing).all():
         return float(spacing)
-    burstingness = sum(spacing)/len(spacing)
-    return burstingness
+    b_mean = statistics.mean(spacing)
+    b_median = statistics.median(spacing)
+    b_mode = statistics.mode(spacing)
+    return (b_mean, b_median, b_mode)
 
 if __name__ == '__main__':
     args = sys.argv[1:] # input from command line
@@ -176,10 +178,13 @@ if __name__ == '__main__':
             cd = calculateCD(passage_count, len(hp_texts["Chapter No."].tolist()))
             br = calculateAverageBurstingness(word)
             print("\nInput Word: " + word,
+                  "\nWord Counts (across all books): " + str(sum(wc_by_book.values())),
+                  "\nBooks in which word appears: " + str(wc_by_book),
+                  "\nNumber of chapters in which word appears: " + str(passage_count),
                   "\nWord Frequency (HP books): " + str(wf_hp),
-                  "\nLg10 Word Frequency (SUBTLEXus): " + str(wf_subtlex),
-                  "\nContextual Diversity: " + str(cd),
-                  "\nBurstingness: " + str(br))
+                  # "\nLg10 Word Frequency (SUBTLEXus): " + str(wf_subtlex),
+                  "\nChapter Diversity: " + str(cd),
+                  "\nBurstingness: " + str(br[0]) + " (Mean); " + str(br[1]) + " (Median); " + str(br[2]) + " (Mode)\n")
             # print(word, wf_hp, wf_subtlex, br, end="\n")
         elif len(occurrences)==0:
             print("\nInput Word: " + word,
